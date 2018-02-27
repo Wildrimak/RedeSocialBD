@@ -103,7 +103,8 @@ select * from participante_do_grupo;
 select find_id_usuario_by_username('lara');
 select find_id_grupo_by_nome('novo');
 
-create or replace function upd_grupo(nome_antigo varchar(50), novo_nome_do_grupo varchar(50), membro_do_grupo varchar(50)) returns void as $$
+create or replace function upd_grupo(nome_antigo varchar(50), novo_nome_do_grupo varchar(50), membro_do_grupo varchar(50)) 
+returns void as $$
 
 begin
   
@@ -153,3 +154,78 @@ language sql;
 
 select find_id_grupo_by_nome('novo');
 select find_id_usuario_by_username('lara');
+
+select * from participante_do_grupo;
+
+create or replace function add_participante_do_grupo(usuario varchar(50), qual_grupo varchar(50))
+returns void as $$
+
+begin
+
+	insert into participante_do_grupo values (find_id_usuario_by_username(usuario), 
+	find_id_grupo_by_nome(qual_grupo));
+	raise notice 'Usuario inserido com sucesso!';
+end;
+
+$$ LANGUAGE plpgsql;
+
+select add_participante_do_grupo('nadia', 'Novo');
+select add_participante_do_grupo('lucca', 'Novo');
+select add_participante_do_grupo('lara', 'Novo');
+
+
+create or replace function del_participante_do_grupo(usuario varchar(50), grupo varchar(50))
+returns void as $$
+
+begin
+
+	delete from mensagem_do_grupo where participante_do_grupo_id_grupo = (find_id_grupo_by_nome(grupo))
+	and participante_do_grupo_usuario_participante = (find_id_usuario_by_username(usuario));
+	delete from participante_do_grupo where grupo_id_grupo = (find_id_grupo_by_nome(grupo))
+	and usuario_participante = (find_id_usuario_by_username(usuario));
+	raise notice 'participante do grupo foi deletado com sucesso';
+end;
+
+$$ language plpgsql;
+
+select del_participante_do_grupo('nadia', 'Novo');
+select * from participante_do_grupo;
+
+
+select * from mensagem_do_grupo;
+select * from participante_do_grupo;
+select * from grupo;
+select * from usuario;
+select find_id_grupo_by_nome('novo');
+select find_id_usuario_by_username('lara');
+
+create or replace function add_mensagem_do_grupo(usuario varchar(50), grupo varchar(50), 
+texto varchar(30000)) returns void as $$
+
+begin
+	insert into mensagem_do_grupo values (default, find_id_usuario_by_username(usuario),
+	find_id_grupo_by_nome(grupo), texto, 'now');
+	raise notice 'mensagem enviada com sucesso!';
+end;
+
+$$ language plpgsql;
+
+select add_mensagem_do_grupo('nadia', 'Novo', 'Oi meninas');
+select add_mensagem_do_grupo('lucca', 'Novo', 'Oi Marle de novo com isso?');
+select add_mensagem_do_grupo('lara', 'Novo', 'nossa...');
+
+select * from mensagem_do_grupo;
+
+create or replace function del_mensagem_do_grupo(usuario varchar(50), grupo varchar(50), texto_a_se_apagar varchar(30000))
+returns void as $$
+
+begin
+	delete from mensagem_do_grupo 
+	where participante_do_grupo_usuario_participante = (find_id_usuario_by_username(usuario))
+	and participante_do_grupo_id_grupo = (find_id_grupo_by_nome(grupo))
+	and texto = texto_a_se_apagar;
+end;
+
+$$ language plpgsql;
+
+select del_mensagem_do_grupo('nadia', 'Novo', 'Oi meninas');
