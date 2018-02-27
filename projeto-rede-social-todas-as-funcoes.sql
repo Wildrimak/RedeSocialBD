@@ -97,49 +97,63 @@ $$ LANGUAGE plpgsql;
 
 select add_grupo('novo', 'Super Wildrimak');
 
+select * from grupo;
 select * from participante_do_grupo;
+
+select find_id_usuario_by_username('lara');
+select find_id_grupo_by_nome('novo');
 
 create or replace function upd_grupo(nome_antigo varchar(50), novo_nome_do_grupo varchar(50), membro_do_grupo) returns void as $$
 
 begin
 
-	-- eu quero que um usuario que participa do grupo x possa alterar seu nome
-	-- extrair id do membro do grupo que é um nome que existe apenas em usuario
+	-- eu quero que um usuario que participa do grupo x possa alterar o nome do grupo
+	-- extrair os ids dos membros do grupo
 	-- saber se esse usuario participa do grupo
 	-- extrair id do nome do grupo antigo
-	-- problema um mesmo usuario pode ta em dois grupos iguais de ids diferentes e querer alterar seu nome
+	-- problema um mesmo usuario pode ta em dois grupos de nomes iguais de ids diferentes e querer alterar seu nome
 	
 	select usuario_participante from participante_do_grupo 
 	where usuario_participante = (select id_usuario from usuario where username = membro_do_grupo)
 	and grupo_id_grupo = (select id_grupo from grupo where nome = nome_antigo)
   
 	update grupo set nome = novo_nome_do_grupo where nome = nome_antigo
-	and ;
+	and usuario_criador_do_grupo = x;
+	x = ''
 	raise notice 'nome do grupo alterado com sucesso';
 end;
 $$ LANGUAGE plpgsql;
 
 select * from grupo;
 
-create or replace function del_grupo(nome_do_grupo varchar(50), criador_do_grupo int) 
+select * from mensagem_do_grupo;
+
+create or replace function del_grupo(nome_do_grupo varchar(50), criador_do_grupo varchar(50)) 
 returns void as $$
 
 begin
 
-	delete from grupo where nome = nome_do_grupo and usuario_criador_do_grupo = ()
+	delete from mensagem_do_grupo where participante_do_grupo_id_grupo = (find_id_grupo_by_nome(nome_do_grupo));
+	delete from participante_do_grupo where grupo_id_grupo = (find_id_grupo_by_nome(nome_do_grupo));
+	delete from grupo where nome = nome_do_grupo and usuario_criador_do_grupo = (find_id_usuario_by_username(criador_do_grupo));
+	raise notice 'grupo deletado com sucesso!';
 
 end;
 
 $$ LANGUAGE plpgsql;
 
+select del_grupo('As Meninas Super Poderosas', 'lara');
+
+select * from grupo;
 select * from usuario;
 
-create or replace function find_id_usuario_by_username(nome_de_usuario varchar(50)) returns table (id_usuario int) as $$
-begin 
+create or replace function find_id_usuario_by_username(nome_de_usuario varchar(50), out result int) 
+as 'select usuario.id_usuario from usuario where username = nome_de_usuario'
+language sql;
 
-	return query select usuario.id_usuario from usuario where username = nome_de_usuario;
+create or replace function find_id_grupo_by_nome(nome_do_grupo varchar(50), out result int) 
+as 'select grupo.id_grupo from grupo where nome = nome_do_grupo'
+language sql;
 
-end;
-$$ language plpgsql;
-
-select * from find_id_usuario_by_username('lara');
+select find_id_grupo_by_nome('novo');
+select find_id_usuario_by_username('lara');

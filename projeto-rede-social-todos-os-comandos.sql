@@ -74,9 +74,12 @@ insert into participante_do_grupo values (1, 2);
 insert into participante_do_grupo values (6, 2);
 insert into participante_do_grupo values (7, 2);
 insert into participante_do_grupo values (8, 2);
+/*
 insert into participante_do_grupo values (2, 3);
 insert into participante_do_grupo values (3, 3);
 insert into participante_do_grupo values (6, 3);
+*/
+
 select * from participante_do_grupo;
 
 create table mensagem_do_grupo(
@@ -87,7 +90,7 @@ create table mensagem_do_grupo(
 	momento timestamp not null,
 	constraint pk_id_mensagem_do_grupo
 		primary key(id_mensagem_do_grupo),
-	constraint fk_participante_do_na_mensagem_do_grupo
+	constraint fk_participante_usuario_na_mensagem_do_grupo
 		foreign key(participante_do_grupo_usuario_participante, participante_do_grupo_id_grupo)
 			references participante_do_grupo(usuario_participante, grupo_id_grupo)
 );
@@ -108,12 +111,14 @@ insert into mensagem_do_grupo
 	values (default, 4, 1, 'Eu gostei!', 'now');
 insert into mensagem_do_grupo
 	values (default, 5, 1, 'Nada a comentar', 'now');
+/*
 insert into mensagem_do_grupo
 	values (default, 2, 3, 'oi meninas', 'now');
 insert into mensagem_do_grupo
 	values (default, 3, 3, 'oi marle de novo?', 'now');
 insert into mensagem_do_grupo
 	values (default, 6, 3, 'nossa...', 'now');
+*/
 
 insert into mensagem_do_grupo
 	values (default, 2, 3, 'booo! olha quem apareceu!', 'now');
