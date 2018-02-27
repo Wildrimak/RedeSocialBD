@@ -103,26 +103,22 @@ select * from participante_do_grupo;
 select find_id_usuario_by_username('lara');
 select find_id_grupo_by_nome('novo');
 
-create or replace function upd_grupo(nome_antigo varchar(50), novo_nome_do_grupo varchar(50), membro_do_grupo) returns void as $$
+create or replace function upd_grupo(nome_antigo varchar(50), novo_nome_do_grupo varchar(50), membro_do_grupo varchar(50)) returns void as $$
 
 begin
-
-	-- eu quero que um usuario que participa do grupo x possa alterar o nome do grupo
-	-- extrair os ids dos membros do grupo
-	-- saber se esse usuario participa do grupo
-	-- extrair id do nome do grupo antigo
-	-- problema um mesmo usuario pode ta em dois grupos de nomes iguais de ids diferentes e querer alterar seu nome
-	
-	select usuario_participante from participante_do_grupo 
-	where usuario_participante = (select id_usuario from usuario where username = membro_do_grupo)
-	and grupo_id_grupo = (select id_grupo from grupo where nome = nome_antigo)
   
 	update grupo set nome = novo_nome_do_grupo where nome = nome_antigo
-	and usuario_criador_do_grupo = x;
-	x = ''
-	raise notice 'nome do grupo alterado com sucesso';
+	and id_grupo in (
+		select grupo_id_grupo from participante_do_grupo 
+		where grupo_id_grupo = (find_id_grupo_by_nome(nome_antigo)) 
+		and usuario_participante = (find_id_usuario_by_username(membro_do_grupo))	
+	);
+
+	raise notice 'Nome do grupo alterado com sucesso';
 end;
 $$ LANGUAGE plpgsql;
+
+select upd_grupo('Familia Chrono Trigger', 'Chrono Trigger', 'r66y');
 
 select * from grupo;
 
