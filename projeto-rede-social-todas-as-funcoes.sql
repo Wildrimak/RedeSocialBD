@@ -229,3 +229,50 @@ end;
 $$ language plpgsql;
 
 select del_mensagem_do_grupo('nadia', 'Novo', 'Oi meninas');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+create or replace function adicione(nome_da_tabela varchar(50), meu_contato varchar(50),
+outro_contato varchar(50), nomear_outro_contato varchar(50))
+returns void as $$
+
+begin
+
+	if nome_da_tabela = 'contato' then
+		insert into contato values (
+			find_id_usuario_by_username(meu_contato), 
+			find_id_usuario_by_username(outro_contato),
+			nomear_outro_contato
+		);
+		raise info 'Nome do contato adicionado com sucesso!';
+	else
+		raise info 'Esta tabela não existe!';
+
+	end if;
+
+end;
+
+language plpgsql;
