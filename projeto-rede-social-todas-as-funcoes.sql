@@ -39,24 +39,35 @@ begin
 end;
 $$ language plpgsql;
 
-select adicionar('participante_do_grupo', 'EloisaLeno', 'Associados a Wildrimak');
-
-
-select * from participante_do_grupo; 
-select * from usuario;
-select * from grupo;
-
-create or replace function adicionar(nome_da_tabela varchar(50), meu_contato varchar(50), outro_contato varchar(50), nomear_outro_contato varchar(50))
+select adicionar('contato', 'Super Wildrimak', 'r66y', 'Robo');
+select adicionar('mensagem_do_grupo', 'Super Wildrimak', 'Associados a Wildrimak', 'Eu sou um baita de um teste');
+select * from mensagem_do_grupo; select * from participante_do_grupo; select * from grupo; select * from usuario;
+select * from contato;
+create or replace function adicionar(varchar(50), varchar(50), varchar(50), varchar(30000))
 returns void as $$
 
+declare
+	nome_da_tabela alias for $1;
+	string_1 alias for $2; /*Meu usuario ou Usuario do Grupo que manda mensagem*/
+	string_2 alias for $3; /*Outra pessoa no qual mudo o nome ou Grupo no qual mando mensagem */
+	string_3 alias for $4; /*Nome dado a pessoa do contato ou texto enviado tratar tamanho 30000 da string*/
+	
 begin
 
 	if nome_da_tabela = 'contato' then
 		insert into contato values (
-			find_id_usuario_by_username(meu_contato),
-			find_id_usuario_by_username(outro_contato),
-			nomear_outro_contato
+			find_id_usuario_by_username(string_1),
+			find_id_usuario_by_username(string_2),
+			string_3
 		);
+	elsif nome_da_tabela = 'mensagem_do_grupo' then
+		insert into mensagem_do_grupo values (default,
+		find_id_usuario_by_username(string_1), 
+		find_id_grupo_by_nome(string_2),
+		string_3, 'now', string_1);
+	else
+		raise notice 'Esta tabela não existe no banco de dados, nada inserido, tente novamente.';
+	
 	end if;
 
 end;
@@ -69,7 +80,6 @@ select adicionar('contato', 'Super Wildrimak', 'fabricio', 'Fabricio');
 
 select * from contato;
 select * from usuario;
-
 
 create or replace function alterar(nome_da_tabela varchar(50), meu_contato varchar(50), outro_contato varchar(50), novo_nome_do_contato varchar(50))
 returns void as $$
