@@ -11,6 +11,8 @@
 ALTER TABLE usuario ADD CONSTRAINT unico_email UNIQUE (e_mail);
 ALTER TABLE usuario ADD CONSTRAINT unico_username UNIQUE (username);
 
+insert into usuario values (0, 'DELETADO@DELETADO.com', 'DELETADO7687', 'DELETADO', null, null);
+
 insert into usuario values(default, 'wildrimak@outlook.com', 'Root',
 'wildrimak', '+55 86 9 9810-0097', '1997-07-12');
 
@@ -94,6 +96,9 @@ create table mensagem_do_grupo(
 		foreign key(participante_do_grupo_usuario_participante, participante_do_grupo_id_grupo)
 			references participante_do_grupo(usuario_participante, grupo_id_grupo)
 );
+
+alter table mensagem_do_grupo add column quem_mandou_a_mensagem varchar(50)
+select * from mensagem_do_grupo;
 
 insert into mensagem_do_grupo
 	values (default, 1, 2, 'Oi gente meu nome é Wildrimak e eu criei esse grupo para passar informações importantes para vocês sobre jogos', 'now');
