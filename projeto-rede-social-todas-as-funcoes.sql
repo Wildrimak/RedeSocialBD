@@ -96,14 +96,30 @@ begin
 		find_id_usuario_by_username(string_1), 
 		find_id_grupo_by_nome(string_2),
 		string_3, 'now', string_1);
+
+	elsif nome_da_tabela = 'status' then
+		insert into status values (default, string_1, 'now', lo_import(string_2), 
+		find_id_usuario_by_username(string_3));
+		raise notice 'Status enviado com sucesso!';
 	else
-		raise notice 'Esta tabela não existe no banco de dados, nada inserido, tente novamente.';
+		raise notice 'Esta tabela não existe no banco de dados, nada inserido, 
+		tente novamente!';
 	
 	end if;
 
 end;
 $$ language plpgsql;
 
+	select adicionar('status', 'O naruto em um dia qualquer', 
+		null , 'Super Wildrimak');
+	select adicionar('status', 'O naruto em um dia qualquer', 
+		'/home/wildrimak/Pictures/naruto.png' , 'Super Wildrimak');
+
+	/* '/home/wildrimak/Pictures/naruto.png' */
+
+	SELECT lo_export('/home/wildrimak/Pictures/naruto.png') 
+	FROM status WHERE id_status = 4;
+	
 	select adicionar('contato', 'Super Wildrimak', 'supervegeta', 'Davyson');
 	select adicionar('contato', 'Super Wildrimak', 'nadia', 'Marle');
 	select adicionar('contato', 'Super Wildrimak', 'fabricio', 'Fabricio');
@@ -120,6 +136,24 @@ $$ language plpgsql;
 	select adicionar('mensagem_do_grupo', 'lucca', 'Chrono Trigger', 'Marle que porra é essa... kkkkkk');
 	select adicionar('mensagem_do_grupo', 'r66y', 'Chrono Trigger', 'Eu gostei!');
 
+
+create or replace function adicionar(varchar(50), varchar(200), imagem oid, varchar(50)) 
+returns void as $$
+
+declare
+	nome_da_tabela alias for $1;
+	mensagem alias for $2; 
+	usuario alias for $4;
+	
+begin
+
+	
+	else
+		raise notice 'Esta tabela não existe';
+	end if;
+
+end;
+$$ language plpgsql;
 
 create or replace function alterar(nome_da_tabela varchar(50), meu_contato varchar(50), 
 outro_contato varchar(50), novo_nome_do_contato varchar(50))
@@ -154,7 +188,6 @@ declare
 begin
 
 	if nome_da_tabela = 'contato' then
-
 		delete from contato where eu = find_id_usuario_by_username(string_1)
 		and ele = find_id_usuario_by_username(string_2);
 		raise info 'Contato deletado com sucesso!';
@@ -167,7 +200,8 @@ begin
 
 	elsif nome_da_tabela = 'grupo' and usuario_criador_grupo = 
 	find_id_usuario_by_username(string_2) then
-		/*Somente se não houver membros*/
+		/*Nao pode deletar grupo enquanto nao houver apenas ele como usuario */
+		/*Ao apagar destruir todas as mensagens contidas naquele grupo*/
 	else
 		raise notice 'Esta tabela não existe no banco de dados, nada inserido, tente novamente.';
 	
