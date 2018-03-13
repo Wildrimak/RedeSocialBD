@@ -101,31 +101,6 @@ alter table mensagem_do_grupo add column quem_mandou_a_mensagem varchar(50)
 select * from mensagem_do_grupo;
 
 insert into mensagem_do_grupo
-	values (default, 1, 2, 'Oi gente meu nome é Wildrimak e eu criei esse grupo para passar informações importantes para vocês sobre jogos', 'now');
-insert into mensagem_do_grupo
-	values (default, 6, 2, 'Que nome de grupo tosco kkkkkkkkkkkkk', 'now');
-insert into mensagem_do_grupo
-	values (default, 7, 2, 'Pois é tinha que ser algo mais realista', 'now');
-insert into mensagem_do_grupo
-	values (default, 8, 2, 'Vou nem dizer nada...', 'now');
-insert into mensagem_do_grupo
-	values (default, 2, 1, 'Oi gente!!!', 'now');
-insert into mensagem_do_grupo
-	values (default, 3, 1, 'Marle que porra é essa... kkkkkk', 'now');
-insert into mensagem_do_grupo
-	values (default, 4, 1, 'Eu gostei!', 'now');
-insert into mensagem_do_grupo
-	values (default, 5, 1, 'Nada a comentar', 'now');
-/*
-insert into mensagem_do_grupo
-	values (default, 2, 3, 'oi meninas', 'now');
-insert into mensagem_do_grupo
-	values (default, 3, 3, 'oi marle de novo?', 'now');
-insert into mensagem_do_grupo
-	values (default, 6, 3, 'nossa...', 'now');
-*/
-
-insert into mensagem_do_grupo
 	values (default, 2, 3, 'booo! olha quem apareceu!', 'now');
 
 select * from mensagem_do_grupo;
