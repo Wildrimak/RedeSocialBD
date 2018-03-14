@@ -12,4 +12,3 @@ select * from contato; /* I[ok] U[ok] D[ok] */
 select * from produto; /* I[] U[] D[] */
 select * from item_compra; /* I[] U[] D[] */
 select * from loja_virtual; /* I[] U[] D[] */
-
